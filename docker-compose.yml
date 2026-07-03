@@ -1,0 +1,30 @@
+services:
+  prometheus:
+    image: prom/prometheus:v3.12.0
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:13.1.0
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  jellyfin-exporter:
+    image: rebelcore/jellyfin-exporter:v1.5.1
+    environment:
+      - JELLYFIN_ADDRESS=http://host.docker.internal:8096
+      - JELLYFIN_TOKEN=PASTE_JELLYFIN_API_KEY_HERE
+    ports:
+      - "9594:9594"
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+  grafana_data:
